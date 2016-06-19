@@ -1,5 +1,5 @@
 # Anagrams
-An anagram is a word formed by rearranging the letters of another word. For example, cinema is an anagram of iceman.
+An anagram is a word formed by rearranging the letters of another word. For example, "cinema" is an anagram of "iceman".
 
 The mechanics of the game are as follows:
 
