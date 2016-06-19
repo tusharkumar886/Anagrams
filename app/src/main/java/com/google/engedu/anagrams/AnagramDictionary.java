@@ -23,30 +23,33 @@ public class AnagramDictionary {
     public AnagramDictionary(InputStream wordListStream) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(wordListStream));
         String line;
-        while((line = in.readLine()) != null) {
+        while ((line = in.readLine()) != null) {
             String word = line.trim();
             wordSet.add(word);
-            String sortedWord = sort(word);
 
-            if(lettersToWord.containsKey(sortedWord)){
+            char[] chars = word.toCharArray();
+            Arrays.sort(chars);
+            String sortedWord = new String(chars);
+
+            if (lettersToWord.containsKey(sortedWord)) {
                 lettersToWord.get(sortedWord).add(word);
-            }
-            else {
+            } else {
                 ArrayList<String> arrayList = new ArrayList<>();
                 arrayList.add(word);
-                lettersToWord.put(sortedWord,arrayList);
+                lettersToWord.put(sortedWord, arrayList);
             }
         }
     }
 
-    public static String sort(String i){
-        char[] chars = i.toCharArray();
-        Arrays.sort(chars);
-        String string = new String(chars);
-        return string;
-    }
-
     public boolean isGoodWord(String word, String base) {
+        if (wordSet.contains(base)) {
+            //print("Word contains exact base string.");
+            return false;
+        }
+        if (!wordSet.contains(word)) {
+            //print("Word is not present in dictionary.");
+            return false;
+        }
         return true;
     }
 
