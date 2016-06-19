@@ -26,10 +26,7 @@ public class AnagramDictionary {
         while ((line = in.readLine()) != null) {
             String word = line.trim();
             wordSet.add(word);
-
-            char[] chars = word.toCharArray();
-            Arrays.sort(chars);
-            String sortedWord = new String(chars);
+            String sortedWord = sortString(word);
 
             if (lettersToWord.containsKey(sortedWord)) {
                 lettersToWord.get(sortedWord).add(word);
@@ -40,14 +37,20 @@ public class AnagramDictionary {
             }
         }
     }
+    public String sortString(String a){
+        char[] chars = a.toCharArray();
+        Arrays.sort(chars);
+        String string = new String(chars);
+        return string;
+    }
 
     public boolean isGoodWord(String word, String base) {
         if (wordSet.contains(base)) {
-            //print("Word contains exact base string.");
+            //print "Word contains exact base string.");
             return false;
         }
         if (!wordSet.contains(word)) {
-            //print("Word is not present in dictionary.");
+            //print "Word is not present in dictionary.");
             return false;
         }
         return true;
@@ -55,10 +58,21 @@ public class AnagramDictionary {
 
     public ArrayList<String> getAnagramsWithOneMoreLetter(String word) {
         ArrayList<String> result = new ArrayList<String>();
+        for (char c ='a';c<='z';c++){
+            String abc = sortString(word + c);
+            if(lettersToWord.containsKey(abc)){
+                ArrayList<String> anagram = lettersToWord.get(abc);
+                for(String s: anagram){
+                    if(isGoodWord(s,word)){
+                        result.add(s);
+                    }
+                }
+            }
+        }
         return result;
     }
 
     public String pickGoodStarterWord() {
-        return "foo";
+        return "soot";
     }
 }
