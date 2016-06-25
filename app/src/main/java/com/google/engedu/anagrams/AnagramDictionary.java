@@ -91,10 +91,11 @@ public class AnagramDictionary {
             wordList = sizeOfWords.get(wordLength);
         }
 
+        int i = Math.abs(random.nextInt() % wordList.size());
         String answer = new String();
         int counter = 0;
 
-        for ( int i = 0 ; ;i++, counter++) {
+        for ( ; ; i++, counter++) {
             String word = wordList.get(i);
             String sortedword = sortString(word);
             ArrayList<String> sortedwordList = lettersToWord.get(sortedword);
@@ -105,6 +106,15 @@ public class AnagramDictionary {
 
             if (i == wordList.size() - 1) {
                 i = 0;
+            }
+
+            if (counter == wordList.size()){
+                if (wordLength < MAX_WORD_LENGTH){
+                    wordLength++;
+                }
+                wordList = sizeOfWords.get(wordLength);
+                i = Math.abs(random.nextInt() % wordList.size());
+                counter = 0;
             }
         }
 
