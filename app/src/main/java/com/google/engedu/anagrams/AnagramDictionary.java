@@ -20,6 +20,8 @@ public class AnagramDictionary {
     private static HashSet<String> wordSet = new HashSet<>();
     private static HashMap<String, ArrayList<String>> lettersToWord = new HashMap<>();
     private static HashMap<Integer, ArrayList<String>> sizeOfWords = new HashMap<>();
+    private static  int wordLength = DEFAULT_WORD_LENGTH;
+
     public AnagramDictionary(InputStream wordListStream) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(wordListStream));
         String line;
@@ -82,6 +84,33 @@ public class AnagramDictionary {
     }
 
     public String pickGoodStarterWord() {
-        return "foo";
+        ArrayList<String> wordList = sizeOfWords.get(wordLength);
+
+        while (wordList.size() < 1){
+            wordLength++;
+            wordList = sizeOfWords.get(wordLength);
+        }
+
+        String answer = new String();
+        int counter = 0;
+
+        for ( int i = 0 ; ;i++, counter++) {
+            String word = wordList.get(i);
+            String sortedword = sortString(word);
+            ArrayList<String> sortedwordList = lettersToWord.get(sortedword);
+            if (sortedwordList.size() >= MIN_NUM_ANAGRAMS) {
+                answer = word;
+                break;
+            }
+
+            if (i == wordList.size() - 1) {
+                i = 0;
+            }
+        }
+
+        if (wordLength < MAX_WORD_LENGTH) {
+            wordLength++;
+        }
+        return answer;
     }
 }
