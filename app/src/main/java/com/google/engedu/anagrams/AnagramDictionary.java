@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.lang.String;
 
 public class AnagramDictionary {
 
@@ -16,6 +17,7 @@ public class AnagramDictionary {
     private static final int DEFAULT_WORD_LENGTH = 3;
     private static final int MAX_WORD_LENGTH = 7;
     private Random random = new Random();
+
 
     private static HashSet<String> wordSet = new HashSet<>();
     private static HashMap<String, ArrayList<String>> lettersToWord = new HashMap<>();
@@ -25,55 +27,62 @@ public class AnagramDictionary {
     public AnagramDictionary(InputStream wordListStream) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(wordListStream));
         String line;
-        while ((line = in.readLine()) != null) {
+        while((line = in.readLine()) != null) {
             String word = line.trim();
-            wordSet.add(word);
-            String sortedWord = sortString(word);
 
-            if (lettersToWord.containsKey(sortedWord)) {
-                lettersToWord.get(sortedWord).add(word);
+            wordSet.add(word);
+            String sorted = sortString(word);
+
+            if(lettersToWord.containsKey(sorted)) {
+                lettersToWord.get(sorted).add(word);
             } else {
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add(word);
-                lettersToWord.put(sortedWord, arrayList);
+                ArrayList<String> list = new ArrayList<>();
+                list.add(word);
+                lettersToWord.put(sorted, list);
             }
 
-            if (sizeToWords.containsKey(word.length())) {
+            if(sizeToWords.containsKey(word.length())) {
                 sizeToWords.get(word.length()).add(word);
             } else {
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add(word);
-                sizeToWords.put(word.length(), arrayList);
+                ArrayList<String> list = new ArrayList<>();
+                list.add(word);
+                sizeToWords.put(word.length(), list);
             }
         }
     }
 
-    public String sortString(String a) {
-        char[] chars = a.toCharArray();
+    public static String sortString(String input){
+
+        char[] chars = input.toCharArray();
         Arrays.sort(chars);
-        String string = new String(chars);
-        return string;
+        String sorted = new String(chars);
+        return sorted;
     }
 
     public boolean isGoodWord(String word, String base) {
-        if (wordSet.contains(base)) {
-            System.out.print("Word contains exact base string.");
+        if(!wordSet.contains(word)) {
+            System.out.println("Word is not in the Dictionary");
             return false;
         }
-        if (!wordSet.contains(word)) {
-            System.out.print("Word is not present in dictionary.");
+
+        if (word.contains(base)) {
+            System.out.println("Word contains the base given word");
             return false;
         }
+
         return true;
     }
 
     public ArrayList<String> getAnagramsWithOneMoreLetter(String word) {
         ArrayList<String> result = new ArrayList<>();
-        for (char c = 'a'; c <= 'z'; c++) {
-            String abc = sortString(word + c);
-            if (lettersToWord.containsKey(abc)) {
-                ArrayList<String> anagram = lettersToWord.get(abc);
-                for (String s : anagram) {
+
+        for (char c = 'a'; c <= 'z'; c++){
+            String temp = sortString(word + c);
+
+            if (lettersToWord.containsKey(temp)){
+                ArrayList<String> anagrams = lettersToWord.get(temp);
+
+                for (String s : anagrams){
                     if (isGoodWord(s, word)) {
                         result.add(s);
                     }
