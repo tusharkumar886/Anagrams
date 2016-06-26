@@ -19,8 +19,8 @@ public class AnagramDictionary {
 
     private static HashSet<String> wordSet = new HashSet<>();
     private static HashMap<String, ArrayList<String>> lettersToWord = new HashMap<>();
-    private static HashMap<Integer, ArrayList<String>> sizeOfWords = new HashMap<>();
-    private static  int wordLength = DEFAULT_WORD_LENGTH;
+    private static HashMap<Integer, ArrayList<String>> sizeToWords = new HashMap<>();
+    private static int wordLength = DEFAULT_WORD_LENGTH;
 
     public AnagramDictionary(InputStream wordListStream) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(wordListStream));
@@ -38,17 +38,17 @@ public class AnagramDictionary {
                 lettersToWord.put(sortedWord, arrayList);
             }
 
-            if(sizeOfWords.containsKey(word.length())){
-                sizeOfWords.get(word.length()).add(word);
+            if (sizeToWords.containsKey(word.length())) {
+                sizeToWords.get(word.length()).add(word);
             } else {
                 ArrayList<String> arrayList = new ArrayList<>();
                 arrayList.add(word);
-                sizeOfWords.put(word.length(),arrayList);
+                sizeToWords.put(word.length(), arrayList);
             }
         }
     }
 
-    public String sortString(String a){
+    public String sortString(String a) {
         char[] chars = a.toCharArray();
         Arrays.sort(chars);
         String string = new String(chars);
@@ -57,11 +57,11 @@ public class AnagramDictionary {
 
     public boolean isGoodWord(String word, String base) {
         if (wordSet.contains(base)) {
-            System.out.print( "Word contains exact base string.");
+            System.out.print("Word contains exact base string.");
             return false;
         }
         if (!wordSet.contains(word)) {
-            System.out.print ("Word is not present in dictionary.");
+            System.out.print("Word is not present in dictionary.");
             return false;
         }
         return true;
@@ -69,12 +69,12 @@ public class AnagramDictionary {
 
     public ArrayList<String> getAnagramsWithOneMoreLetter(String word) {
         ArrayList<String> result = new ArrayList<>();
-        for (char c ='a';c<='z';c++){
+        for (char c = 'a'; c <= 'z'; c++) {
             String abc = sortString(word + c);
-            if(lettersToWord.containsKey(abc)){
+            if (lettersToWord.containsKey(abc)) {
                 ArrayList<String> anagram = lettersToWord.get(abc);
-                for(String s: anagram){
-                    if(isGoodWord(s,word)){
+                for (String s : anagram) {
+                    if (isGoodWord(s, word)) {
                         result.add(s);
                     }
                 }
@@ -84,19 +84,19 @@ public class AnagramDictionary {
     }
 
     public String pickGoodStarterWord() {
-        ArrayList<String> wordList = sizeOfWords.get(wordLength);
+        ArrayList<String> list = sizeToWords.get(wordLength);
 
-        while (wordList.size() < 1){
+        while (list.size() < 1){
             wordLength++;
-            wordList = sizeOfWords.get(wordLength);
+            list = sizeToWords.get(wordLength);
         }
 
-        int i = Math.abs(random.nextInt() % wordList.size());
+        int i = Math.abs(random.nextInt() % list.size());
         String answer = new String();
         int counter = 0;
 
         for ( ; ; i++, counter++) {
-            String word = wordList.get(i);
+            String word = list.get(i);
             String sortedword = sortString(word);
             ArrayList<String> sortedwordList = lettersToWord.get(sortedword);
             if (sortedwordList.size() >= MIN_NUM_ANAGRAMS) {
@@ -104,16 +104,16 @@ public class AnagramDictionary {
                 break;
             }
 
-            if (i == wordList.size() - 1) {
+            if (i == list.size() - 1) {
                 i = 0;
             }
 
-            if (counter == wordList.size()){
+            if (counter == list.size()){
                 if (wordLength < MAX_WORD_LENGTH){
                     wordLength++;
                 }
-                wordList = sizeOfWords.get(wordLength);
-                i = Math.abs(random.nextInt() % wordList.size());
+                list = sizeToWords.get(wordLength);
+                i = Math.abs(random.nextInt() % list.size());
                 counter = 0;
             }
         }
@@ -121,6 +121,7 @@ public class AnagramDictionary {
         if (wordLength < MAX_WORD_LENGTH) {
             wordLength++;
         }
+
         return answer;
     }
 }
